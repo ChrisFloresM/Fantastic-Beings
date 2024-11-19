@@ -1,0 +1,63 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html, body {
+    height: 100%;
+}
+
+.game-board {
+    background-image: url("../img/board-bg.png");
+    background-size: 100% 100%;
+    height: 100vh;
+}
+
+.game-status-bar {
+    background-image: url("../img/state-panel-bg.png");
+    height: 15vh;
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+}
+
+.game-map {
+    margin: 3vh auto 0 auto;
+    height: 60vh;
+    aspect-ratio: 1 / 1;
+    display: flex;
+}
+
+.game-map-body {
+    display: grid;
+    gap: 3px;
+    flex: 1;
+}
+
+.game-map-row {
+    display: grid;
+    gap: 3px;
+}
+
+.game-map-cell {
+    background-color: rgba(103, 101, 168, 0.4);
+    border: 1px solid rgb(103, 101, 168);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.creature {
+    max-width: 80%;
+}
+
+.game-map-cell:hover {
+    cursor: pointer;
+    background: url("../img/cell-hover-bg.png");
+    background-size: cover;
+}
+
+.game-map-cell--selected, .game-map-cell--selected:hover {
+    background: url("../img/cell-selected-bg.png");
+    background-size: cover;
+}
