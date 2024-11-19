@@ -1,5 +1,52 @@
 let creatureMap = [];
 let initialize = true;
+let combinationsMap = [];
+const creatures = [
+    "kelpie",
+    "puffskein",
+    "salamander",
+    "swooping",
+    "zouwu"
+];
+
+window.generateRandomBeingName = function() {
+    return getRandomCreature();
+}
+
+window.checkForCombinations = function() {
+    const mapLen = creatureMap.length;
+    let secuenceFind = false;
+
+    /* Check for horizontal secuences */
+    for (let i = 0; i < mapLen; i++) {
+        for (let j = 0; j < mapLen - 2; j++) {
+            if (creatureMap[i][j] === creatureMap[i][j + 1] && creatureMap[i][j] === creatureMap[i][j + 2]) {
+                secuenceFind = true;
+                combinationsMap[i][j] = combinationsMap[i][j + 1] = combinationsMap[i][j + 2] = true;
+            }
+        }
+    }
+
+    /* Check for vertical secuences */
+    for (let i = 0; i < mapLen - 2; i++) {
+        for (let j = 0; j < mapLen; j++) {
+            if (creatureMap[i][j] === creatureMap[i + 1][j] && creatureMap[i][j] === creatureMap[i + 2][j]) {
+                secuenceFind = true;
+                combinationsMap[i][j] = combinationsMap[i + 1][j] = combinationsMap[i + 2][j] = true;
+            }
+        }
+    }
+
+    for (let i = 0; i < mapLen; i++) {
+        for (let j = 0; j < mapLen; j++) {
+            if (combinationsMap[i][j]) {
+               creatureMap[i][j] =  window.generateRandomBeingName();
+            }
+        }
+    }
+
+    return secuenceFind;
+}
 
 window.setCreatureMap = function(newMap){
     creatureMap = newMap;
@@ -13,6 +60,7 @@ window.renderMap = function(rowsCount, colsCount) {
         if (initialize) {
             creatureMap[i] = [];
         }
+        combinationsMap[i] = [];
         for (let j = 0; j < colsCount; j++) {
             let colElement = createColElement();
             colElement.dataset.X = String(j);
@@ -23,6 +71,7 @@ window.renderMap = function(rowsCount, colsCount) {
             if (initialize) {
                 creatureMap[i][j] = null;
             }
+            combinationsMap[i][j] = false;
         }
         mapBody.append(rowElement);
     }
@@ -35,7 +84,38 @@ window.clearMap = function() {
     document.querySelector('.game-map-body').innerHTML = '';
 }
 
+window.redrawMap = function(creaturesArray) {
+    const arrayLength = creaturesArray.length;
+
+    let validArray = arrayLength >= 3;
+    if (validArray) {
+        for (let row of creaturesArray) {
+            if (row.length !== arrayLength) {
+                validArray = false;
+                break;
+            }
+        }
+    }
+
+    if (!validArray) {
+        alert("Invalid array dimensions!");
+        return false;
+    }
+
+    window.clearMap();
+    window.renderMap(arrayLength, arrayLength);
+    fillCustomCells(creaturesArray);
+    window.setCreatureMap(creaturesArray);
+}
+
 window.renderMap(5, 5);
+fillCells();
+
+if (checkForCombinations()) {
+    do {
+        window.redrawMap(creatureMap);
+    } while(checkForCombinations());
+}
 
 function createRowElement() {
     let row = document.createElement('tr');
@@ -57,6 +137,12 @@ function createColElement() {
             cellElement.classList.add("game-map-cell--selected");
         } else {
             swapCreatures(currentSelected, cellElement);
+            if(checkForCombinations()) {
+                do {
+                    window.redrawMap(creatureMap);
+                } while(checkForCombinations());
+            }
+
         }
     })
     return col;
@@ -80,112 +166,15 @@ function swapCreatures(currentSelected, cellElement) {
 
         cellElement.classList.remove('game-map-cell--selected');
         currentSelected.classList.remove('game-map-cell--selected');
-
-        let removeXCurrent = horizontalCheck(currentSelectedCoords[0], currentSelectedCoords[1], cellCreature);
-        let removeXCell = horizontalCheck(cellElementCoords[0], cellElementCoords[1], currentSelectedCreature);
-
-        let removeYCurrent = verticalCheck(currentSelectedCoords[0], currentSelectedCoords[1], cellCreature);
-        let removeYCell = verticalCheck(cellElementCoords[0], cellElementCoords[1], currentSelectedCreature);
-
-        removeCreaturesX(removeXCurrent, currentSelectedCoords[1]);
-        removeCreaturesX(removeXCell, cellElementCoords[1]);
-
-        removeCreaturesY(removeYCurrent, currentSelectedCoords[0]);
-        removeCreaturesY(removeYCell, cellElementCoords[0])
-
-        return true;
     }
 }
+
 
 function validateNeighbour(cellA, cellB) {
     let diffX = Math.abs(cellA[0] - cellB[0]);
     let diffY = Math.abs(cellA[1] - cellB[1]);
 
     return (diffX === 0 && diffY === 1) || (diffX === 1 && diffY === 0);
-}
-
-function horizontalCheck(coordX, coordY, creature) {
-
-    const maxLen = creatureMap.length - 1;
-    let removeIdxs = [];
-    let removeIdxsTemp = [];
-
-    coordX = Number(coordX);
-    coordY = Number(coordY);
-
-    const startPosition = Math.max(0, coordX - 2);
-    const endPosition = Math.min(coordX + 2, maxLen);
-
-    for (let i = startPosition; i <= endPosition; i++) {
-        if (creatureMap[coordY][i] === creature) {
-            removeIdxsTemp.push(i);
-        } else {
-            if (removeIdxsTemp.length >= 3) {
-                removeIdxsTemp.forEach(idx => {
-                    removeIdxs.push(idx);
-                });
-            }
-            removeIdxsTemp.length = 0;
-        }
-    }
-
-    removeIdxsTemp.forEach(idx => {
-        removeIdxs.push(idx);
-    });
-
-    return removeIdxs;
-}
-
-function verticalCheck(coordX, coordY, creature) {
-
-    const maxLen = creatureMap.length - 1;
-    let removeIdxs = [];
-    let removeIdxsTemp = [];
-
-    coordX = Number(coordX);
-    coordY = Number(coordY);
-
-    const startPosition = Math.max(0, coordY - 2);
-    const endPosition = Math.min(coordY + 2, maxLen);
-
-    for (let i = startPosition; i <= endPosition; i++) {
-        if (creatureMap[i][coordX] === creature) {
-            removeIdxsTemp.push(i);
-        } else {
-            if (removeIdxsTemp.length >= 3) {
-                removeIdxsTemp.forEach(idx => {
-                    removeIdxs.push(idx);
-                });
-            }
-            removeIdxsTemp.length = 0;
-        }
-    }
-
-    removeIdxsTemp.forEach(idx => {
-        removeIdxs.push(idx);
-    });
-
-    return removeIdxs;
-}
-
-function removeCreaturesX(removeIdxs, coordY) {
-    if (removeIdxs.length >= 3) {
-        removeIdxs.forEach(removeIdx => {
-            creatureMap[coordY][removeIdx] = "empty";
-        });
-
-        window.redrawMap(creatureMap);
-    }
-}
-
-function removeCreaturesY(removeIdxs, coordX) {
-    if (removeIdxs.length >= 3) {
-        removeIdxs.forEach(removeIdx => {
-            creatureMap[removeIdx][coordX] = "empty";
-        });
-
-        window.redrawMap(creatureMap);
-    }
 }
 
 function setCreature(cell, creature) {
@@ -204,3 +193,30 @@ function setCreature(cell, creature) {
 
     creatureMap[coordY][coordX] = creature;
 }
+
+function getRandomCreature() {
+    const randomNumber = Math.floor(Math.random() * (4 + 1));
+    return creatures[randomNumber];
+}
+
+function fillCells() {
+    const tableElements = document.querySelectorAll('.cell');
+
+    tableElements.forEach((tableElement) => {
+        if (tableElement.innerHTML.trim() === "") {
+            setCreature(tableElement, window.generateRandomBeingName());
+        }
+    })
+}
+
+function fillCustomCells(creaturesArray) {
+    const tableElements = document.querySelectorAll('.cell');
+
+    tableElements.forEach((tableElement) => {
+        const coordX = tableElement.dataset.X;
+        const coordY = tableElement.dataset.Y;
+        setCreature(tableElement, creaturesArray[coordY][coordX]);
+    })
+}
+
+
