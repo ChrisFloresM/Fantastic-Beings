@@ -3,18 +3,46 @@
 	<head>
 		<meta charset="UTF-8">
 		<title>Fantastic Being and how to match them</title>
+		<!-- Fonts: Marmelad -->
+		<link rel="preconnect" href="https://fonts.googleapis.com">
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+		<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@300..700&family=Marmelad&family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap" rel="stylesheet">
 
+		<!-- Stylesheets-->
 		<link rel="stylesheet" href="styles/styles.css" type="text/css">
 	</head>
 	<body>
 		<div id="board" class="game-board">
-			<div id="status-bar" class="game-status-bar"></div>
+			<div id="status-bar" class="game-status-bar">
+				<div class="status-container">
+					<div id="beings-for-win" class="target-creatures">
+						<div class="beings-container">
+							<div class="creature-container">
+								<img class="target-creature-img" src="img/salamander.png" alt="Picture of salamander being">
+								<span class="salamander creature-score text-shadow">3</span>
+							</div>
+							<div class="creature-container">
+								<img class="target-creature-img" src="img/kelpie.png" alt="Picture of kelpie being">
+								<span class="kelpie creature-score text-shadow">0</span>
+							</div>
+						</div>
+					</div>
+					<div id="moves-value" class="total-moves">
+						<p class="moves-text">Moves<span class="moves-left">10</span></p>
+					</div>
+					<div id="score-value" class="score">
+						<p class="score-text text-shadow">Score: <span class="score-value">30</span></p>
+					</div>
+				</div>
+			</div>
 			<table id="map" class="game-map">
 				<tbody class="game-map-body">
 				</tbody>
 			</table>
+			<footer id="game-footer" class="footer">
+				<p class="footer-text text-shadow">Swap animals to form a sequence of three in a row</p>
+			</footer>
 		</div>
-
 		<script src="scripts/global.js"></script>
 		<script src="scripts/scripts.js"></script>
 	</body>

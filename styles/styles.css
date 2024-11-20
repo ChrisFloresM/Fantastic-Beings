@@ -1,26 +1,95 @@
+
+/*==================== Global styles ====================*/
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
 }
 
-html, body {
-    height: 100%;
+html {
+    font-size: 62.5%;
 }
 
+/* Board styles */
 .game-board {
+    font-family: 'Marmelad', sans-serif;
+    color: #fff;
     background-image: url("../img/board-bg.png");
     background-size: 100% 100%;
     height: 100vh;
+
+    position: relative;
 }
 
+/* ==================== Status bar styles ==================== */
 .game-status-bar {
     background-image: url("../img/state-panel-bg.png");
     height: 15vh;
     background-size: 100% 100%;
     background-repeat: no-repeat;
+
+    display: flex;
+
+    justify-content: center;
 }
 
+.status-container {
+    width: 48%;
+    display: flex;
+    justify-content: center;
+    text-align: center;
+}
+
+/* Creatures score */
+.target-creatures {
+    width: 40%;
+}
+
+.beings-container {
+    display: flex;
+    justify-content: center;
+    gap: 3rem;
+    margin-left: 2vw;
+    height: 10vh;
+}
+
+.creature-container {
+    height: 8vh;
+    width: 8vh;
+    position: relative;
+}
+
+.target-creature-img {
+    width: 100%;
+}
+
+.creature-score {
+    position: absolute;
+    font-size: 3rem;
+    bottom: 0;
+    right: 0;
+}
+
+/* Moves */
+.total-moves {
+    width: 20%;
+    padding-top: 2vh;
+    font-size: 3rem;
+}
+
+.moves-left {
+    display: block;
+}
+
+/* Score */
+.score {
+    width: 40%;
+    padding-top: 2vh;
+    font-size: 3rem;
+    text-align: left;
+    padding-left: 5vw;
+}
+/* ====================== Map styles ====================*/
 .game-map {
     margin: 3vh auto 0 auto;
     height: 60vh;
@@ -60,4 +129,29 @@ html, body {
 .game-map-cell--selected, .game-map-cell--selected:hover {
     background: url("../img/cell-selected-bg.png");
     background-size: cover;
+}
+
+/* ================== Footer styles ================ */
+
+.footer {
+    position: absolute;
+    width: 100%;
+    bottom: 0;
+    height: 15vh;
+
+    background-image: url("../img/game-footer.png");
+    background-size: 100% 100%;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.footer-text {
+    font-size: 5rem;
+}
+
+/* =================== Support class ============== */
+.text-shadow {
+    text-shadow: 1px 3px 1px rgba(0, 0, 0, 0.6);
 }
