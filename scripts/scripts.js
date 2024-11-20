@@ -9,6 +9,15 @@ const creatures = [
     "swooping",
     "zouwu"
 ];
+
+/* Score variables */
+let globalScore = 0;
+let totalMoves = 1;
+let totalZouwu = 3;
+let totalKelpie = 0;
+let winCondition = false;
+let gameOver = false;
+
 /* ============= Global methods =============== */
 
 window.generateRandomBeingName = function() {
@@ -18,6 +27,8 @@ window.generateRandomBeingName = function() {
 window.checkForCombinations = function() {
     const mapLen = creatureMap.length;
     let secuenceFind = false;
+
+    clearCombinationsMap();
 
     /* Check for horizontal secuences */
     for (let i = 0; i < mapLen; i++) {
@@ -43,13 +54,16 @@ window.checkForCombinations = function() {
     for (let i = 0; i < mapLen; i++) {
         for (let j = 0; j < mapLen; j++) {
             if (combinationsMap[i][j]) {
-               creatureMap[i][j] =  window.generateRandomBeingName();
+                countCreaturesScore(i, j);
+                creatureMap[i][j] = window.generateRandomBeingName();
+                globalScore += 10;
             }
         }
     }
 
     return secuenceFind;
 }
+
 
 window.setCreatureMap = function(newMap){
     creatureMap = newMap;
@@ -62,8 +76,8 @@ window.renderMap = function(rowsCount, colsCount) {
         let rowElement = createRowElement();
         if (initialize) {
             creatureMap[i] = [];
+            combinationsMap[i] = [];
         }
-        combinationsMap[i] = [];
         for (let j = 0; j < colsCount; j++) {
             let colElement = createColElement(i, j);
 
@@ -72,8 +86,8 @@ window.renderMap = function(rowsCount, colsCount) {
 
             if (initialize) {
                 creatureMap[i][j] = null;
+                combinationsMap[i][j] = false;
             }
-            combinationsMap[i][j] = false;
         }
         mapBody.append(rowElement);
     }
@@ -121,10 +135,20 @@ function init() {
 
     /* Ensure that there are no combinations on initial creation of map */
     if (checkForCombinations()) {
+        let combinationsFound;
         do {
-            window.redrawMap(creatureMap);
-        } while(checkForCombinations());
+            combinationsFound = checkForCombinations();
+        } while(combinationsFound);
+
+        window.redrawMap(creatureMap);
     }
+
+    globalScore = 0;
+    totalKelpie = 0;
+    totalZouwu = 3;
+    updateScore();
+    updateMoves();
+    updateTargetCreatures();
 }
 
 /* ======================= Suport functions ================================= */
@@ -151,12 +175,17 @@ function createColElement(i, j) {
             cellElement.classList.add("game-map-cell--selected");
         } else {
             swapCreatures(currentSelected, cellElement);
-            if(checkForCombinations()) {
+            if (checkForCombinations()) {
+                let combinationsFound;
                 do {
-                    window.redrawMap(creatureMap);
-                } while(checkForCombinations());
-            }
+                    combinationsFound = checkForCombinations();
+                } while(combinationsFound);
 
+                window.redrawMap(creatureMap);
+            }
+            updateScore();
+            updateTargetCreatures();
+            checkGameState();
         }
     })
 
@@ -179,6 +208,9 @@ function swapCreatures(peviousSelectedCell, currentSelectedCell) {
 
         currentSelectedCell.classList.remove('game-map-cell--selected');
         peviousSelectedCell.classList.remove('game-map-cell--selected');
+
+        totalMoves--;
+        updateMoves();
     }
 }
 
@@ -213,6 +245,14 @@ function getRandomCreature() {
     return creatures[randomNumber];
 }
 
+function clearCombinationsMap() {
+    for(let i = 0; i < combinationsMap.length; i++) {
+        for(let j = 0; j < combinationsMap[i].length; j++) {
+            combinationsMap[i][j] = false;
+        }
+    }
+}
+
 /* Methods to fill cells randomly and with a given array */
 function fillCells() {
     const tableElements = document.querySelectorAll('.cell');
@@ -234,4 +274,50 @@ function fillCustomCells(creaturesArray) {
     })
 }
 
+/* Score functions */
+function updateScore() {
+    const scoreElement = document.querySelector('.score-value');
+    scoreElement.textContent = globalScore;
+}
 
+function updateMoves() {
+    totalMoves = Math.max(0, totalMoves);
+
+    const movesElement = document.querySelector('.moves-left');
+    movesElement.textContent = String(totalMoves);
+
+    if (totalMoves === 0) {
+        gameOver = true;
+        winCondition = false;
+    }
+}
+
+function updateTargetCreatures() {
+    const zouwu = document.querySelector('.zouwu');
+    zouwu.textContent = String(totalZouwu);
+
+    const kelpie = document.querySelector('.kelpie');
+    kelpie.textContent = String(totalKelpie);
+}
+
+function countCreaturesScore(i, j) {
+    if (creatureMap[i][j] === "zouwu") {
+        totalZouwu = Math.max(0, --totalZouwu);
+    }
+
+    if (creatureMap[i][j] === "kelpie") {
+        totalKelpie = Math.max(0, --totalKelpie);
+    }
+
+    if (totalZouwu === 0 && totalKelpie === 0) {
+        gameOver = true;
+        winCondition = true;
+    }
+}
+
+function checkGameState() {
+    if (gameOver) {
+        const endMessage = document.querySelector('.footer-text');
+        endMessage.textContent = winCondition ? "You won! Reload the page to start the game again." : "You lost! Reload the page to start the game again.";
+    }
+}
