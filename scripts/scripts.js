@@ -2,6 +2,7 @@
 let creatureMap = [];
 let initialize = true;
 let combinationsMap = [];
+let firstcheck = false;
 const creatures = [
     "kelpie",
     "puffskein",
@@ -55,11 +56,15 @@ window.checkForCombinations = function() {
         for (let j = 0; j < mapLen; j++) {
             if (combinationsMap[i][j]) {
                 countCreaturesScore(i, j);
+                if (firstcheck && creatureMap[i][j] === "zouwu") {
+                    globalScore += 10;
+                }
+
                 creatureMap[i][j] = window.generateRandomBeingName();
-                globalScore += 10;
             }
         }
     }
+    firstcheck = false;
 
     return secuenceFind;
 }
@@ -175,6 +180,7 @@ function createColElement(i, j) {
             cellElement.classList.add("game-map-cell--selected");
         } else {
             swapCreatures(currentSelected, cellElement);
+            firstcheck = true;
             if (checkForCombinations()) {
                 let combinationsFound;
                 do {
@@ -317,7 +323,7 @@ function countCreaturesScore(i, j) {
 
 function checkGameState() {
     if (gameOver) {
-        const endMessage = document.querySelector('.footer-text');
+        const endMessage = document.querySelector('#game-footer');
         endMessage.textContent = winCondition ? "You won! Reload the page to start the game again." : "You lost! Reload the page to start the game again.";
     }
 }
