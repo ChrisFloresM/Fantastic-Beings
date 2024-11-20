@@ -1,3 +1,4 @@
+/* ============ Globar variables =================== */
 let creatureMap = [];
 let initialize = true;
 let combinationsMap = [];
@@ -8,6 +9,7 @@ const creatures = [
     "swooping",
     "zouwu"
 ];
+/* ============= Global methods =============== */
 
 window.generateRandomBeingName = function() {
     return getRandomCreature();
@@ -37,6 +39,7 @@ window.checkForCombinations = function() {
         }
     }
 
+    /* Fill the creature map based on the combinations map */
     for (let i = 0; i < mapLen; i++) {
         for (let j = 0; j < mapLen; j++) {
             if (combinationsMap[i][j]) {
@@ -62,9 +65,8 @@ window.renderMap = function(rowsCount, colsCount) {
         }
         combinationsMap[i] = [];
         for (let j = 0; j < colsCount; j++) {
-            let colElement = createColElement();
-            colElement.dataset.X = String(j);
-            colElement.dataset.Y = String(i);
+            let colElement = createColElement(i, j);
+
             rowElement.append(colElement);
             rowElement.style.gridTemplateColumns = `repeat(${colsCount}, 1fr)`;
 
@@ -108,15 +110,24 @@ window.redrawMap = function(creaturesArray) {
     window.setCreatureMap(creaturesArray);
 }
 
-window.renderMap(5, 5);
-fillCells();
+/* ================ Init method ============================================= */
+init();
 
-if (checkForCombinations()) {
-    do {
-        window.redrawMap(creatureMap);
-    } while(checkForCombinations());
+function init() {
+    const size = 5;
+    /* Render initial map with random creatures */
+    window.renderMap(size, size);
+    fillCells();
+
+    /* Ensure that there are no combinations on initial creation of map */
+    if (checkForCombinations()) {
+        do {
+            window.redrawMap(creatureMap);
+        } while(checkForCombinations());
+    }
 }
 
+/* ======================= Suport functions ================================= */
 function createRowElement() {
     let row = document.createElement('tr');
     row.classList.add('game-map-row');
@@ -124,11 +135,14 @@ function createRowElement() {
     return row;
 }
 
-function createColElement() {
+function createColElement(i, j) {
     let col = document.createElement('td');
     col.classList.add('game-map-cell');
     col.classList.add('cell');
+    col.dataset.X = String(j);
+    col.dataset.Y = String(i);
 
+    /* Event lisener for Swap functionality */
     col.addEventListener("click", (e) => {
         const currentSelected = document.querySelector('.game-map-cell--selected');
         const cellElement = e.currentTarget;
@@ -145,27 +159,26 @@ function createColElement() {
 
         }
     })
+
     return col;
 }
 
-function setCreatureMap(newMap) {
-    creatureMap = newMap;
-}
-
 /* Gameplay */
-function swapCreatures(currentSelected, cellElement) {
-    const currentSelectedCoords = [currentSelected.dataset.X, currentSelected.dataset.Y];
-    const cellElementCoords = [cellElement.dataset.X, cellElement.dataset.Y];
+function swapCreatures(peviousSelectedCell, currentSelectedCell) {
+    const previousSelectedCoords = [peviousSelectedCell.dataset.X, peviousSelectedCell.dataset.Y];
+    const currentSelectedCoords = [currentSelectedCell.dataset.X, currentSelectedCell.dataset.Y];
 
-    if (validateNeighbour(currentSelectedCoords, cellElementCoords)) {
-        const currentSelectedCreature = currentSelected.dataset.being;
-        const cellCreature = cellElement.dataset.being;
+    if (validateNeighbour(previousSelectedCoords, currentSelectedCoords)) {
+        /* 1. Get the being inside each cell */
+        const previousCellCreature = peviousSelectedCell.dataset.being;
+        const currentSelectedCreature = currentSelectedCell.dataset.being;
 
-        setCreature(currentSelected, cellCreature);
-        setCreature(cellElement, currentSelectedCreature);
+        /* 2. Swap the creatures accordingly */
+        setCreature(peviousSelectedCell, currentSelectedCreature);
+        setCreature(currentSelectedCell, previousCellCreature);
 
-        cellElement.classList.remove('game-map-cell--selected');
-        currentSelected.classList.remove('game-map-cell--selected');
+        currentSelectedCell.classList.remove('game-map-cell--selected');
+        peviousSelectedCell.classList.remove('game-map-cell--selected');
     }
 }
 
@@ -181,7 +194,8 @@ function setCreature(cell, creature) {
     const coordX = cell.dataset.X;
     const coordY = cell.dataset.Y;
 
-    if(creature === "empty") {
+    /* TODO: Verify if this IF condition can be removed */
+    if (creature === "empty") {
         cell.innerHTML = "";
         cell.dataset.being = "";
     } else {
@@ -199,12 +213,13 @@ function getRandomCreature() {
     return creatures[randomNumber];
 }
 
+/* Methods to fill cells randomly and with a given array */
 function fillCells() {
     const tableElements = document.querySelectorAll('.cell');
 
-    tableElements.forEach((tableElement) => {
-        if (tableElement.innerHTML.trim() === "") {
-            setCreature(tableElement, window.generateRandomBeingName());
+    tableElements.forEach((cell) => {
+        if (cell.innerHTML.trim() === "") {
+            setCreature(cell, window.generateRandomBeingName());
         }
     })
 }
@@ -212,10 +227,10 @@ function fillCells() {
 function fillCustomCells(creaturesArray) {
     const tableElements = document.querySelectorAll('.cell');
 
-    tableElements.forEach((tableElement) => {
-        const coordX = tableElement.dataset.X;
-        const coordY = tableElement.dataset.Y;
-        setCreature(tableElement, creaturesArray[coordY][coordX]);
+    tableElements.forEach((cell) => {
+        const coordX = cell.dataset.X;
+        const coordY = cell.dataset.Y;
+        setCreature(cell, creaturesArray[coordY][coordX]);
     })
 }
 
