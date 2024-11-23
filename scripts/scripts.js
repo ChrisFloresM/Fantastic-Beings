@@ -130,7 +130,7 @@ window.redrawMap = function(creaturesArray) {
 }
 
 /* ================ Init method ============================================= */
-init();
+window.addEventListener('load', init);
 
 function init() {
     const size = 5;
