@@ -148,6 +148,7 @@ function init() {
         window.redrawMap(creatureMap);
     }
 
+    preLoadImg();
     globalScore = 0;
     totalKelpie = 0;
     totalZouwu = 3;
@@ -343,4 +344,21 @@ function checkGameState() {
 
 function removeEventListener() {
     document.querySelectorAll('.cell').forEach(cell => cell.removeEventListener('click', cellListener));
+}
+
+function preLoadImg() {
+    const images = [
+        "../img/frame_0_delay-0.07s.png",
+        "../img/frame_1_delay-0.07s.png",
+        "../img/frame_2_delay-0.07s.png",
+        "../img/frame_3_delay-0.07s.png",
+        "../img/frame_4_delay-0.07s.png",
+        "../img/frame_5_delay-0.07s.png",
+        "../img/frame_6_delay-0.07s.png",
+    ];
+
+    images.forEach((src) => {
+        const img = new Image();
+        img.src = src; // Esto carga las imágenes en caché
+    });
 }
