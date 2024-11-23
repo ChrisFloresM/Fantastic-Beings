@@ -56,16 +56,16 @@ window.checkForCombinations = function() {
         for (let j = 0; j < mapLen; j++) {
             if (combinationsMap[i][j]) {
                 countCreaturesScore(i, j);
-                if (firstcheck && creatureMap[i][j] === "zouwu") {
+                if (firstcheck) {
                     globalScore += 10;
+                    addAnimations(i, j);
                 }
-
                 creatureMap[i][j] = window.generateRandomBeingName();
             }
         }
     }
-    firstcheck = false;
 
+    firstcheck = false;
     return secuenceFind;
 }
 
@@ -172,30 +172,41 @@ function createColElement(i, j) {
     col.dataset.Y = String(i);
 
     /* Event lisener for Swap functionality */
-    col.addEventListener("click", (e) => {
-        const currentSelected = document.querySelector('.game-map-cell--selected');
-        const cellElement = e.currentTarget;
-
-        if (!currentSelected) {
-            cellElement.classList.add("game-map-cell--selected");
-        } else {
-            swapCreatures(currentSelected, cellElement);
-            firstcheck = true;
-            if (checkForCombinations()) {
-                let combinationsFound;
-                do {
-                    combinationsFound = checkForCombinations();
-                } while(combinationsFound);
-
-                window.redrawMap(creatureMap);
-            }
-            updateScore();
-            updateTargetCreatures();
-            checkGameState();
-        }
-    })
+    col.addEventListener("click", cellListener);
 
     return col;
+}
+
+function cellListener(e) {
+    const currentSelected = document.querySelector('.game-map-cell--selected');
+    const cellElement = e.currentTarget;
+
+    if (!currentSelected) {
+        cellElement.classList.add("game-map-cell--selected");
+    } else {
+        swapCreatures(currentSelected, cellElement);
+        firstcheck = true;
+        if (checkForCombinations()) {
+            let combinationsFound;
+            do {
+                combinationsFound = checkForCombinations();
+            } while(combinationsFound);
+
+            setTimeout(() => {
+                window.redrawMap(creatureMap);
+            }, 700);
+        }
+        updateScore();
+        updateTargetCreatures();
+        checkGameState();
+    }
+}
+
+/* Animations */
+function addAnimations(i, j) {
+    const cell = document.querySelector(`.cell[data--x="${j}"][data--y="${i}"]`);
+
+    cell.classList.add('animation');
 }
 
 /* Gameplay */
@@ -324,6 +335,12 @@ function countCreaturesScore(i, j) {
 function checkGameState() {
     if (gameOver) {
         const endMessage = document.querySelector('#game-footer');
-        endMessage.textContent = winCondition ? "You won! Reload the page to start the game again." : "You lost! Reload the page to start the game again.";
+        endMessage.textContent = winCondition ? "You won! Reload the page to start the game again."
+            : "You lost! Reload the page to start the game again.";
+/*        removeEventListener();*/
     }
+}
+
+function removeEventListener() {
+    document.querySelectorAll('.cell').forEach(cell => cell.removeEventListener('click', cellListener));
 }

@@ -151,7 +151,142 @@ html {
     font-size: 5rem;
 }
 
+/* Animation for the combinations */
+.animation {
+    background-size: cover;
+    animation: explosion 0.8s;
+}
+
+.animation img {
+    display: none;
+}
+
+@keyframes explosion {
+    0% {
+        background-image: url("../img/frame_0_delay-0.07s.png");
+    }
+
+    14% {
+        background-image: url("../img/frame_1_delay-0.07s.png");
+    }
+
+    28% {
+        background-image: url("../img/frame_2_delay-0.07s.png");
+    }
+
+    42% {
+        background-image: url("../img/frame_3_delay-0.07s.png");
+    }
+
+    56% {
+        background-image: url("../img/frame_4_delay-0.07s.png");
+    }
+
+    70% {
+        background-image: url("../img/frame_5_delay-0.07s.png");
+    }
+
+    100% {
+        background-image: url("../img/frame_6_delay-0.07s.png");
+    }
+}
+
 /* =================== Support class ============== */
 .text-shadow {
     text-shadow: 1px 3px 1px rgba(0, 0, 0, 0.6);
+}
+
+/* Media queries */
+/* ================== Responsiveness ================== */
+
+/* Para pantallas menores a 768px (tablets y móviles) */
+@media (max-width: 768px) {
+    .game-board {
+        height: auto;
+        padding: 1rem;
+    }
+
+    .game-status-bar {
+        flex-direction: column;
+        height: auto;
+        padding: 1rem 0;
+    }
+
+    .status-container {
+        flex-direction: column;
+        width: 100%;
+        text-align: center;
+    }
+
+    .target-creatures,
+    .score,
+    .total-moves {
+        width: 100%;
+        margin-bottom: 1rem;
+    }
+
+    .beings-container {
+        flex-wrap: wrap;
+        gap: 1.5rem;
+        margin-left: 0;
+    }
+
+    .creature-container {
+        height: 6rem;
+        width: 6rem;
+    }
+
+    .creature-score {
+        font-size: 2.5rem;
+    }
+
+    .total-moves,
+    .score {
+        font-size: 2rem;
+    }
+
+    .game-map {
+        height: auto;
+        margin: 2rem auto;
+        aspect-ratio: 1;
+        width: 90%;
+    }
+
+    .footer {
+        height: auto;
+        padding: 1rem 0;
+    }
+
+    .footer-text {
+        font-size: 2.5rem;
+    }
+}
+
+/* Para pantallas menores a 480px (móviles pequeños) */
+@media (max-width: 480px) {
+    .game-status-bar {
+        padding: 1rem 0.5rem;
+    }
+
+    .beings-container {
+        gap: 1rem;
+    }
+
+    .creature-container {
+        height: 5rem;
+        width: 5rem;
+    }
+
+    .creature-score {
+        font-size: 2rem;
+    }
+
+    .total-moves,
+    .score {
+        font-size: 1.5rem;
+    }
+
+    .footer-text {
+        font-size: 2rem;
+    }
 }
