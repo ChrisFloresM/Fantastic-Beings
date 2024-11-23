@@ -200,93 +200,92 @@ html {
 /* ================== Responsiveness ================== */
 
 /* Para pantallas menores a 768px (tablets y móviles) */
-@media (max-width: 768px) {
-    .game-board {
-        height: auto;
-        padding: 1rem;
-    }
+@media (max-width: 1200px) {
 
     .game-status-bar {
-        flex-direction: column;
-        height: auto;
-        padding: 1rem 0;
+        background-size: 180% 100%;
+        background-position: 50%;
     }
 
     .status-container {
-        flex-direction: column;
-        width: 100%;
+        width: 90%;
+        display: flex;
+        justify-content: center;
         text-align: center;
     }
 
-    .target-creatures,
-    .score,
-    .total-moves {
-        width: 100%;
-        margin-bottom: 1rem;
-    }
-
-    .beings-container {
-        flex-wrap: wrap;
-        gap: 1.5rem;
-        margin-left: 0;
-    }
-
-    .creature-container {
-        height: 6rem;
-        width: 6rem;
-    }
-
-    .creature-score {
-        font-size: 2.5rem;
-    }
-
-    .total-moves,
-    .score {
-        font-size: 2rem;
-    }
-
-    .game-map {
-        height: auto;
-        margin: 2rem auto;
-        aspect-ratio: 1;
-        width: 90%;
-    }
-
-    .footer {
-        height: auto;
-        padding: 1rem 0;
-    }
-
     .footer-text {
-        font-size: 2.5rem;
+        font-size: 3.5rem;
     }
 }
 
 /* Para pantallas menores a 480px (móviles pequeños) */
-@media (max-width: 480px) {
-    .game-status-bar {
-        padding: 1rem 0.5rem;
+@media (max-width: 750px) {
+    html {
+        font-size: 50%;
     }
 
-    .beings-container {
-        gap: 1rem;
-    }
-
-    .creature-container {
-        height: 5rem;
-        width: 5rem;
-    }
-
-    .creature-score {
-        font-size: 2rem;
-    }
-
-    .total-moves,
-    .score {
-        font-size: 1.5rem;
+    .game-map {
+        height: 50vh;
     }
 
     .footer-text {
-        font-size: 2rem;
+        font-size: 3rem;
+    }
+
+    .creature-container {
+        height: 6vh;
+        width: 6vh;
+        position: relative;
+    }
+}
+
+/* Para pantallas menores a 480px (móviles pequeños) */
+@media (max-width: 600px) {
+    html {
+        font-size: 40%;
+    }
+
+    .game-map {
+        height: 45vh;
+    }
+
+    .footer-text {
+        font-size: 2.5rem;
+    }
+
+    .creature-container {
+        height: 6vh;
+        width: 6vh;
+        position: relative;
+    }
+}
+
+@media (max-width: 450px) {
+    html {
+        font-size: 30%;
+    }
+
+    .game-status-bar {
+        background-size: 210% 100%;
+        background-position: 50%;
+    }
+
+    .game-map {
+        height: 40vh;
+    }
+
+    .score {
+        font-size: 4rem;
+    }
+
+    .footer-text {
+        font-size: 3rem;
+    }
+
+    .creature-container {
+        height: 6vh;
+        width: 6vh;
+        position: relative;
     }
 }
